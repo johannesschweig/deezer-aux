@@ -29,19 +29,23 @@ with open('files.txt') as f:
       response = requests.request("POST", url, headers=headers, data = payload)
       json_result = json.loads(response.text)
 
-      if len(json_result["results"]["TRACK"]["data"]):
-        first_hit = json_result["results"]["TRACK"]["data"][0]
-        hits = len(json_result["results"]["TRACK"]["data"])
-        # ID
-        id = first_hit["SNG_ID"]
-        # title
-        title = first_hit["SNG_TITLE"]
-        # artist
-        artist = first_hit["ART_NAME"]
-        # album
-        album = first_hit["ALB_TITLE"]
-        #print('found song:', title, 'by', artist, 'on', album)
-        print('https://www.deezer.com/us/track/' + id + '/')
-        #print('hits:', hits)
+      # check for error
+      if json_result["results"] != {}:
+        if len(json_result["results"]["TRACK"]["data"]):
+          first_hit = json_result["results"]["TRACK"]["data"][0]
+          hits = len(json_result["results"]["TRACK"]["data"])
+          # ID
+          id = first_hit["SNG_ID"]
+          # title
+          title = first_hit["SNG_TITLE"]
+          # artist
+          artist = first_hit["ART_NAME"]
+          # album
+          album = first_hit["ALB_TITLE"]
+          #print('found song:', title, 'by', artist, 'on', album)
+          print('https://www.deezer.com/us/track/' + id + '/')
+          #print('hits:', hits)
+        else:
+          print('no hit for', query)
       else:
-        print('no hit for', query)
+        print('error', json_result["error"], 'for', query)
